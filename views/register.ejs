@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Register new contractor</title>
+    <meta name="description" content="Registering your contractor address">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="css/core.css">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+  </head>
+  <body>
+
+    <div class="container">
+      <div class="jumbotron">
+        <h1>Register new contractor</h1>
+        <p>Welcome</p>
+        <% if (locals.error) { %>
+            <div class="alert alert-danger">
+             An error happened: <a href="#" class="alert-link"><%= error %></a>
+            </div>
+        <% } %>
+        <div class="row">
+          <div class="col-md-6">
+            <form class="form-inline" role="form" method="post" action="">
+              <div class="form-group">
+                <input type="url" class="form-control" name="address" placeholder="Address">
+              </div>
+              <button type="submit" class="btn btn-default">Submit</button>
+            </form>
+          </div>
+        </div>
+        <h3>Already registered:</h3>
+        <ul>
+          <% if (locals.users) { %>
+            <% users.forEach(function(user){ %>
+              <li><%= user.address %></li>
+            <% }) %>
+          <% } %>
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>
