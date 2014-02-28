@@ -22,7 +22,7 @@ That return:
 
     { "name": "YOUR_TEAM_NAME", "avatar": "AVATAR_URL", "city": "CITY_NAME" }
 
-Once it is done, go to http://<address>/register and enter the address of your server. (Port included)
+Once it is done, go to http://crime-challenge.herokuapp.com/register and enter the address of your server. (Port included)
 
 If all works well, you will see your name and pictures in the list of existing contractors.
 
@@ -33,7 +33,7 @@ Hint: You might want to look at the documentation of the HTTP module:
 
 Now you are all setup, you need to tell the Drones what they have to do.
 
-If your server have a /broadcast endpoint, you will receive informations about the crimes the Drones are observing.
+If your server have a ```/broadcast``` endpoint, you will receive informations about the crimes the Drones are observing.
 For each crime, you need to send back an action to explain to the Drones how to treat people.
 
 Typical crime report:
