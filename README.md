@@ -8,8 +8,7 @@ As drones can't make the difference between good and bad, help them identify cri
 # Exercise 1:
 
 You are a new freelance agency and have taken a maintenance contract over the Drones.
-
-First, in order to start your new company, you need to be able to receive the Drones broadcasting news and register as a Drone contractor.
+First, in order to start your new company, you need to register as a Drone contractor.
 
 Technically, you need to create a webserver that will listen to an endpoint:
 
@@ -17,25 +16,28 @@ Technically, you need to create a webserver that will listen to an endpoint:
 
 That return:
 
-    { name: "YOUR_TEAM_NAME", avatar: "AVATAR_URL", city: "CITY_NAME" }
+    { "name": "YOUR_TEAM_NAME", "avatar": "AVATAR_URL", "city": "CITY_NAME" }
 
-Once it is done, go to http://localhost:3000/register and enter the address of your server.
+Once it is done, go to http://<address>/register and enter the address of your server. (Port included)
 
-If all works well, you will start to receive news from the Drones at /broadcast, and your company will appear in the Drone Online Channel.
+If all works well, you will see your name and pictures in the list of existing contractors.
+
+Help: You might want to look at the documentation of the HTTP module:
+      http://nodejs.org/api/http.html
 
 # Exercise 2:
 
 Now you are all setup, you need to tell the Drones what they have to do.
 
-On /broadcast, you receive informations about the crimes the Drones are observing.
+If your server have a /broadcast endpoint, you will receive informations about the crimes the Drones are observing.
 For each crime, you need to send back an action to explain to the Drones how to treat people.
 
 Typical crime report:
 
 {
-  id: 123456,
+  \_id: 123456,
   criminalId: 123456,
-  type: 'STEALING',
+  type: 'ROBBERY',
   amount: 200,
   location: {
     lat: 54.989,
@@ -45,19 +47,24 @@ Typical crime report:
 
 ## Different types of crimes:
 
-### type: STEALING
+### type: ROBBERY
 
 In case of someone stealing someone else property, the sentence is to pay back with an extra.
 The ```amount``` property is only provided for STEALING and UNPAID
 You have to return such objects:
 
 {
-  id: 123456,
+  \_id: 123456,
   action: 'FINE',
   amount: 480
 }
 
 The formula is: (amount * 2) + 20%
+
+Help: This is a nice occasion to meet with the Streams:
+      http://nodejs.org/api/stream.html#stream_event_data
+
+# TODO
 
 ### type: UNPAID
 

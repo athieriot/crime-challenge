@@ -31,14 +31,34 @@
             </form>
           </div>
         </div>
-        <h3>Already registered:</h3>
-        <ul>
-          <% if (locals.users) { %>
-            <% users.forEach(function(user){ %>
-              <li><%= user.address %></li>
-            <% }) %>
-          <% } %>
-        </ul>
+        <br/>
+        <div class="panel panel-info">
+          <div class="panel-heading">Already registered:</div>
+
+          <!-- Table -->
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>City</th>
+                <th>Address</th>
+              </tr>
+            <thead>
+            <tbody>
+            <% if (locals.users) { %>
+              <% users.forEach(function(user){ %>
+                <tr style="vertical-align: middle;">
+                  <td><img width="64px" src="<%= user.avatar %>" class="thumbnail"></td>
+                  <td><%= user.name %></td>
+                  <td><%= user.city %></td>
+                  <td><%= user.address %></td>
+                </tr>
+              <% }) %>
+            <% } %>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </body>

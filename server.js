@@ -4,9 +4,12 @@ var http = require('http');
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
 var device  = require('express-device');
+var _ = require('highland')
+var casual = require('casual');
 
 var Datastore = require('nedb')
-  , db = new Datastore({ filename: 'datafile', autoload: true });
+  , users = new Datastore({ filename: 'users', autoload: true })
+  , crimes = new Datastore();
 
 var runningPortNumber = process.env.PORT;
 
@@ -22,7 +25,6 @@ app.configure(function(){
 	app.use(device.capture());
 });
 
-// logs every request
 app.use(function(req, res, next){
 	// output every request in the array
 	console.log({method:req.method, url: req.url, device: req.device});
@@ -30,10 +32,13 @@ app.use(function(req, res, next){
 	next();
 });
 
-app.get("/", function(req, res){ res.render('index', {}); });
+app.get("/", function(req, res){
+  users.find({}, function (err, docs) {
+    res.render('index', {error: err, users: docs});
+  });
+});
 app.get("/register", function(req, res){
-
-  db.find({ type: 'user' }, function (err, docs) {
+  users.find({}, function (err, docs) {
     res.render('register', {error: err, users: docs});
   });
 });
@@ -41,34 +46,117 @@ app.post("/register", function(req, res) {
 
   var address = req.body.address;
 
-  http.get(address + "/about", function(res) {
-    db.insert({
-      type: 'user',
-      address: address,
-      name: res.name,
-      avatar: res.avatar,
-      city: res.city
-    });
+  http.get(address + "/about", function(result) {
+    result.on("data", function(chunk) {
+      try {
 
-    db.find({ type: 'user' }, function (err, docs) {
-      res.render('register', {users: docs});
+        var json = JSON.parse(chunk.toString());
+        users.insert({
+          address: address,
+          name: json.name,
+          avatar: json.avatar,
+          city: json.city
+        }, function() {
+          users.find({}, function (err, docs) {
+            res.render('register', {users: docs});
+          });
+        });
+
+      } catch(e) {
+        res.render('register', {error: e.message});
+      }
     });
   }).on('error', function(e) {
     res.render('register', {error: e.message});
   });
 });
 
-io.sockets.on('connection', function (socket) {
-
-	io.sockets.emit('blast', {msg:"<span style=\"color:red !important\">someone connected</span>"});
-
-	socket.on('blast', function(data, fn){
-		console.log(data);
-		io.sockets.emit('blast', {msg:data.msg});
-
-		fn();//call the client back to clear out the field
-	});
+casual.define('crime_report', function() {
+  return {
+    criminal: {
+      name: casual.name,
+      job: casual.title
+    },
+    type: casual.random_element(['ROBBERY'/*, 'UNPAID', 'MURDER'*/]),
+    amount: casual.integer(from = 200, to = 5000),
+    location: {
+      lat: casual.latitude,
+      lng: casual.longitude
+    }
+  }
 });
 
+var isCrimeSolved = function(crime, solution) {
+  console.log(JSON.stringify(crime) + "\n" + JSON.stringify(solution));
+  switch (crime.type) {
+    case 'ROBBERY':
+      return solution.action == 'FINE' && (solution.amount == (crime.amount * 2 + crime.amount * 0.2)); break;
+    default: return true;
+  }
+}
+
+setInterval(function() {
+  users.find({}, function(err, docs) {
+    _(docs).each(function(user) {
+      crimes.insert(casual.crime_report, function(error, newCrime) {
+        // write data to request body
+        req.write(JSON.stringify(newCrime));
+        req.end();
+
+        io.sockets.emit('report', require('merge')(
+          { user_id: user._id }, newCrime)
+        );
+      });
+
+      var url = require('url').parse(user.address);
+      var options = {
+        hostname: url.hostname,
+        port: url.port,
+        path: '/broadcast',
+        method: 'POST'
+      };
+
+      var req = http.request(options, function(res) {
+        res.setEncoding('utf8');
+        res.on('data', function (solution) {
+          var solution = JSON.parse(solution);
+
+          crimes.findOne({ _id: solution._id }, function(error, crime) {
+            var total = user.points | 0;
+
+            if (crime && isCrimeSolved(crime, solution)) {
+              total++;
+              io.sockets.emit('solved', { crime: crime, solution: solution, user: user });
+            } else {
+              total--;
+            }
+
+            users.update({ _id: user._id }, { $set: { points: total }});
+            io.sockets.emit('ping', user);
+          });
+        });
+      });
+
+      req.on('error', function(e) {
+        console.log('problem with request: ' + e.message);
+      });
+
+    });
+  });
+}, 5000);
+
+io.sockets.on('connection', function (socket) {
+
+  io.sockets.emit('blast', {
+    msg:"<span style=\"color:red !important\">someone connected</span>"
+  });
+
+  socket.on('blast', function(data, fn){
+    console.log(data);
+    io.sockets.emit('blast', {msg:data.msg});
+
+    fn();//call the client back to clear out the field
+  });
+});
 
 server.listen(runningPortNumber);

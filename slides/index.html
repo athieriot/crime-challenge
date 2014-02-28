@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Introduction to Scala</title>
+
+		<meta name="description" content="Indroduction to the Scala language and overview of Play Framework">
+		<meta name="author" content="Aurélien Thieriot">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/solarized.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+    </script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+				<section>
+					<h1>Node.js</h1>
+					<h3>Introduction</h3>
+					<p>
+						<small>Conquest of the office: Step 1</small>
+					</p>
+          <img src="img/nodejs.png"/><br/>
+				</section>
+
+				<section>
+            <h2>Definition:</h2>
+            <ul>
+              <li>Node.js is a high performance network applications framework, well optimized for high concurrent environments...</li>
+              <li>Personified in a command line tool.</li>
+              <li>Or mode simply: Node.js is Javascript on the server</li>
+            </ul>
+        </section>
+
+				<section>
+          <h2>Pobol y Node</h2>
+          <ul>
+            <li>Node.js was created by Ryan Dahl in 2009</li>
+            <li>It is mainly sponsored by a company called Joyent</li>
+            <li>First official release in 2011</li>
+            <li>Node.js is NOT the first attempt of a server side Javascript</li>
+            <li>Same year, the package manager NPM is introduced</li>
+            <li>In june of 2011, Microsoft wants to help porting Node to windows</li>
+            <li>Is is finally completed in 2012</li>
+            <li>2012, Ryan Dahl quit Node.js community (and any online presence)</li>
+          </ul>
+        </section>
+
+				<section>
+          <ul>
+            <li>The creator of NPM, Isaac Schlueter become the new maintainer. Like Ryan, he is employed by Joyent</li>
+            <li>During the early years, the Javascript community wake up and the number of Node.js based projects explode</li>
+            <li>2014, Schlueter stepped aside in favour of Timothy J Fontaine and create the Npm Inc. company</li>
+            <li>Two days ago, a Drama happened as Nodejitsu tried to register the NPM trademark</li>
+            </ul>
+        </section>
+
+        <section>
+          <section>
+            <h2>Behind the scene</h2>
+            <ul>
+              <li>Node.js runs on V8</li>
+              <li>V8 is the JS engine developed by Google for Chrome</li>
+              <li>It uses an event-driven, non-blocking I/O model</li>
+              <li>It makes use of event-loops via callbacks</li>
+              <li>There is no DOM</li>
+              <li>Node.js is single threaded by default</li>
+              <li>40% JS, 60% C++, Node.js use libuv to run long running jobs</li>
+            </ul>
+					</section>
+        </section>
+
+        <section>
+          <section>
+          <img src="img/loop.png" />
+          </section>
+        </section>
+
+        <section>
+          <h3>The butterfly effect</h3>
+          <p>IO is time consuming</p>
+          <p>Waiting is free</p>
+          <img src="img/graph.png"/>
+        </section>
+
+        <section>
+          <h3>When to use Node</h3>
+          <ul>
+            <li>Http servers (APIs)</li>
+            <li>Web chat applications</li>
+            <li>Any kind of real time / collaboration tools</li>
+            <li>Data streaming (Like Twitter API)</li>
+            <li>High concurrency</li>
+            <li>You like Javascript</li>
+            <li>Want to share code between front and server</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>When not to use Node</h3>
+          <ul>
+            <li>Heavy CPU intensive calculation</li>
+            <li>You don't like Javascript</li>
+            <li>Simple CRUD applications</li>
+            <li>You are not willing to pay the price of a changing world</li>
+            <li>Note: Debugging is not really straightforward</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>A dynamic Ecosystem</h3>
+          <p>"There is a module for it"</p>
+          <ul>
+            <li>NPM use module pattern</li>
+            <li>It is easy to use</li>
+            <li>There days, there is a library for almost everything</li>
+            <ul>
+              <li>npm: dependency management</li>
+              <li>grunt: build tool</li>
+              <li>express: MVC framework</li>
+              <li>socket.io: Websockets</li>
+              <li>mocha: Unit testing</li>
+              <li>Non-blocking DB libraries (All sorts)</li>
+              <li>Utilities, you name it...</li>
+            </ul>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Example: Read a file</h2>
+          <pre>
+            var fs = require('fs');
+
+            fs.readFile('/etc/passwd', function (err, data) {
+              if (err) throw err;
+              console.log(data);
+            });
+          </pre>
+        </section>
+
+        <section>
+          <h2>Example: Web server</h2>
+          <pre>
+
+
+            var http = require('http');
+
+            var server = http.createServer(function(req, res) {
+
+              res.writeHead(200, {
+                'Content-Type': 'text/plain'
+              });
+              res.end('Hello HTTP!');
+            });
+
+            server.listen(5000);
+          </pre>
+        </section>
+
+        <section>
+          <h2>Example: Module</h2>
+            name.js:
+            <pre>
+
+              var capaldi = 13;
+
+              var doctor = function() {
+                return capaldi;
+              };
+
+              module.exports = doctorwho;
+            </pre>
+            server.js
+            <pre>
+
+              var who = require('./name');
+
+              console.log(who()); // Prints: 13 
+            </pre>
+          </section>
+
+          <section>
+            <p>To be continued... ?</p>
+          </section>
+
+        <!--
+				<section>
+					<h2>Export to PDF</h2>
+					<p>Presentations can be <a href="https://github.com/hakimel/reveal.js#pdf-export">exported to PDF</a>, below is an example that's been uploaded to SlideShare.</p>
+					<iframe id="slideshare" src="http://www.slideshare.net/slideshow/embed_code/13872948" width="455" height="356" style="margin:0;overflow:hidden;border:1px solid #CCC;border-width:1px 1px 0;margin-bottom:5px" allowfullscreen> </iframe>
+					<script>
+						document.getElementById('slideshare').attributeName = 'allowfullscreen';
+					</script>
+          </section>
+          -->
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+    <script src="js/jquery-1.10.1.min.js"> </script>
+    <script src="js/Chart.min.js"> </script>
+
+    <script>
+
+      $('#eval').click(function () {
+        var languagesCtx = $("#languagesChart").get(0).getContext("2d");
+        var languagesData = JSON.parse($("#languagesData").text());
+
+        //This will get the first returned node in the jQuery collection.
+        var languagesChart = new Chart(languagesCtx).Bar(languagesData);
+
+        var usageCtx = $("#usageChart").get(0).getContext("2d");
+        var usageData = JSON.parse($("#usageData").text());
+
+        //This will get the first returned node in the jQuery collection.
+        var usageChart = new Chart(usageCtx).Pie(usageData);
+
+        var typeCtx = $("#typeChart").get(0).getContext("2d");
+        var typeData = JSON.parse($("#typeData").text());
+
+        //This will get the first returned node in the jQuery collection.
+        var typeChart = new Chart(typeCtx).Pie(typeData);
+      });
+    </script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        transition: Reveal.getQueryHash().transition || 'page', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

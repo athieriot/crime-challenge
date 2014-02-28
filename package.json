@@ -11,7 +11,11 @@
     "socket.io": "~0.9.16",
     "ejs": "~0.8.5",
     "express-device": "~0.3.7",
-    "nedb": "~0.10.4"
+    "nedb": "~0.10.4",
+    "highland": "~1.11.0",
+    "randopeep": "~0.1.5",
+    "casual": "~1.4.5",
+    "merge": "~1.1.2"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
