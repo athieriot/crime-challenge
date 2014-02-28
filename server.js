@@ -11,7 +11,7 @@ var Datastore = require('nedb')
   , users = new Datastore({ filename: 'users', autoload: true })
   , crimes = new Datastore();
 
-var runningPortNumber = process.env.PORT;
+var runningPortNumber = Number(process.env.PORT || 5000);
 
 app.configure(function(){
 	// I need to access everything in '/public' directly
